@@ -1,0 +1,58 @@
+CUSTOM DATASET ZA UČENJE TENSORFLOW MODELA
+Priprava dataseta in okolja za učenje predpripravljenega modela
+
+Vedno uporabljaj python3.x !
+vedno  # From tensorflow/models/research/       export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim              set PYTHONPATH=%PYTHONPATH%;%cd%;%cd%\slim
+
+I. instalacija tensorflowa
+II. instalacija object_detection apija (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md)
+	-instaliras dependencije
+	-git clone https://github.com/tensorflow/models.git
+	-compilas protobuf
+III. 
+	1.) priprava dataseta
+		-crop na 300x300px
+		-S programom »labelImg« naredimo annotatione, ki se spravijo v mapo
+		-vsaka slika mora imeti vsaj en objekt
+		-Annotatione in slike prestavimo v mapo "tensorflow/models/research/object_detection/data images|annotations /"
+		-V »tensorflow/models/research/object_detection/data« naredimo .pbtxt file, kjer so notr ID-ji in imena class-ov 
+		-V mapi »...data/annotations« potrebujemo še »trainval.txt« kjer so zapisane vse datoteke za train in validacijo 
+			ls ../images/ | grep ".jpg" | sed s/.jpg// > trainval2.txt
+			ls ../images/ | grep ".JPG" | sed s/.JPG// > trainval.txt
+	2.) priprava TFRecords
+		-annotations in data mape prestavimo v /research/
+		-V ».../research/« zaženemo spodnjo kodo, kar bi moralo narediti TFRecords(train.record, validation.record)
+			
+		
+	python3 object_detection/dataset_tools/create_pet_tf_record_old.py --label_map_path=object_detection/data/lego_minifigs_labels.pbtxt --data_dir=/media/tim/shared_disk/projekti/AIS_project/models-master/research --output_dir=/media/tim/shared_disk/projekti/AIS_project/models-master/research
+
+
+
+
+	3.) priprava Pipelina
+		-Potrebuješ konfiguracijo modela (osnovni so v object_detection/samples/config/) – spremeniš število classov in pa poti do train/val.record in pa pot do datoteke s labelsi (.pbtxt) (uporabi absolutno pot to fileov)
+	4.) pretrained model (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md)
+		-Rabiš še model.ckpt kjer so verjetno notr uteži (pretrained) ki ga tud dodaš v zgornji config file (dobiš iz .zip fila) npr iz »ssd_mobilenet_v1_coco_11_06_2017.tar«
+			a. Lahko so to tri datoteke(model.ckpt.data- ,model.ckpt.meta, model.ckpt.index) za kar v kodi daš samo model.ckpt (sam bo najdu te tri file)
+
+	5.) TRAINING
+		-Iz …/research/ poženeš 
+		UBUNTU:
+			python3 object_detection/train.py --logtostderr --pipeline_config_path=object_detection/models/ssd_mobilenet_v1_lego.config checkpoint_dir=object_detection/models/train/ --train_dir=object_detection/models/train/
+		WINDOWS
+			python object_detection/train.py --logtostderr --pipeline_config_path=object_detection/models/ssd_mobilenet_v1_lego_win.config checkpoint_dir=object_detection/models/train/ --train_dir=object_detection/models/train/
+	EVALUATION
+		python3 object_detection/eval.py --logtostderr --pipeline_config_path=object_detection/models/ssd_mobilenet_v1_lego.config --checkpoint_dir=object_detection/models/train/ --eval_dir=object_detection/models/eval/
+		python object_detection/eval.py --logtostderr --pipeline_config_path=object_detection/models/ssd_mobilenet_v1_lego_win.config --checkpoint_dir=object_detection/models/train/ --eval_dir=object_detection/models/eval/
+	TENSORBOARD
+		tensorboard --logdir=object_detection/models/
+
+
+
+	6.) Izvoz frozen grapha
+		-za uporabo lahko izvoziš datoteko
+			python3 object_detection/export_inference_graph.py --input_type image_tensor --pipeline_config_path object_detection/models/ssd_mobilenet_v1_lego.config --trained_checkpoint_prefix object_detection/models/train/model.ckpt-0 --output_directory output_inference_graph_lego.pb
+
+			python object_detection/export_inference_graph.py --input_type image_tensor --pipeline_config_path object_detection/models/ssd_mobilenet_v1_lego_win.config --trained_checkpoint_prefix object_detection/models/train/model.ckpt-7922 --output_directory output_inference_graph_lego.pb
+
+
