@@ -1,0 +1,32 @@
+data_augmentation_options {
+    random_image_scale{
+    }
+  }
+  data_augmentation_options {
+    random_adjust_brightness {
+    }
+  }
+  data_augmentation_options {
+    random_adjust_contrast {
+    }
+  }
+  data_augmentation_options {
+    ssd_random_crop {
+    }
+  }
+
+
+
+  data_augmentation_options {
+    random_horizontal_flip {
+    }
+  }
+  data_augmentation_options {
+    random_adjust_brightness {
+    }
+  }
+
+  data_augmentation_options {
+    ssd_random_crop {
+    }
+  }

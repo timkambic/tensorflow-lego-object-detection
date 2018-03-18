@@ -1,0 +1,26 @@
+<annotation>
+	<folder>luke</folder>
+	<filename>luke050.JPG</filename>
+	<path>A:\projekti\AIS_project\images\luke\luke050.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>0</width>
+		<height>0</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>luke</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>109</xmin>
+			<ymin>108</ymin>
+			<xmax>161</xmax>
+			<ymax>184</ymax>
+		</bndbox>
+	</object>
+</annotation>
